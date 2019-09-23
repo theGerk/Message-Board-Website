@@ -23,6 +23,7 @@ CREATE TABLE 'Comments' (
 	'ReplyId' INT UNSINGED NOT NULL,
 	'Text' VARCHAR(500),
 	'AttachmentType' VARCHAR(5), ---PHOTO, VIDEO, or NONE
+	'AttachmentName' VARCHAR(20),
 	'UpVotes' INT UNSIGNED,
 	'DownVotes' INT UNSIGNED
 );

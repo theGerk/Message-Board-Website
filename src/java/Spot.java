@@ -12,9 +12,7 @@
 
 import java.util.List;
 
-import Comment;
-
-public class SpotData{
+public class Spot{
 
 	/*
 	 * The id of this spot
