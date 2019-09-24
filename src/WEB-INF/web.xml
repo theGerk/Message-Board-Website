@@ -1,0 +1,27 @@
+<web-app>
+
+	<servlet>
+		<servlet-name>PreHomePageServlet</servlet-name>
+		<servlet-class>PreHomePageServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>PreHomePageServlet</servlet-name>
+		<url-pattern>/home</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>PreSpotPageServlet</servlet-name>
+		<servlet-class>PreSpotPageServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>PreSpotPageServlet</servlet-name>
+		<url-pattern>/spot</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>home</welcome-file>
+	</welcome-file-list>
+
+</web-app>
