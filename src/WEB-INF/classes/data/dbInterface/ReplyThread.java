@@ -9,9 +9,9 @@ import java.sql.Timestamp;
  * thread.
  */
 
-public class Thread{
+public class ReplyThread{
 
-	private int dbId;
+	private int id;
 
 	private Timestamp timeCreated;
 
@@ -26,7 +26,7 @@ public class Thread{
 	 * Constructor.
 	 */
 
-	public Thread( int dbIdTmp, Timestamp timeCreatedTmp,
+	public ReplyThread( int idTmp, Timestamp timeCreatedTmp,
 			int numRepliesTmp, int numUpVotesTmp,
 			int numDownVotesTmp, int userIdTmp,
 			AttachmentType attachmentTypeTmp,
@@ -34,7 +34,7 @@ public class Thread{
 			String titleTmp,
 			String bodyTmp ){
 
-		dbId = dbIdTmp;
+		id = idTmp;
 
 		timeCreated = timeCreatedTmp;
 
@@ -60,7 +60,7 @@ public class Thread{
 	 * Getters.
 	 */
 
-	public int getDbId(){ return dbId; }
+	public int getId(){ return id; }
 
 	public Timestamp getTimeCreated(){ return timeCreated; }
 

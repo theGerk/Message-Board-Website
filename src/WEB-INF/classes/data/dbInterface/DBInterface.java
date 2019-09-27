@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+import java.util.ArrayList;
+
 /*
  * A bunch of static
  * functions for reading
@@ -37,16 +39,7 @@ public class DBInterface{
 			String password )
 		throws SQLException {
 
-		/*
-		 * Get a connection to
-		 * the database.
-		 */
-
 		Connection conn = dataSource.getConnection();
-
-		/*
-		 * Write the insert statement.
-		 */
 
 		PreparedStatement stmt = conn.prepareStatement
 			( "INSERT INTO users (username, password)"
@@ -56,11 +49,7 @@ public class DBInterface{
 
 		stmt.setString( 2, password );
 
-		//run it
-
 		stmt.executeUpdate();
-
-		//clean up
 
 		stmt.close();
 
@@ -69,7 +58,7 @@ public class DBInterface{
 	}
 	
 	/*
-	 * Add a reply thread to the
+	 * Add a thread to the
 	 * database.
 	 */
 
@@ -80,16 +69,7 @@ public class DBInterface{
 			String body )
 		throws SQLException {
 
-		/*
-		 * Get a connection to
-		 * the database.
-		 */
-
 		Connection conn = dataSource.getConnection();
-
-		/*
-		 * Write the insert statement.
-		 */
 
 		PreparedStatement stmt = conn.prepareStatement
 			( "INSERT INTO threads (user_id, attachment_type,"
@@ -106,11 +86,7 @@ public class DBInterface{
 		
 		stmt.setString( 5, body );
 
-		//run it
-
 		stmt.executeUpdate();
-
-		//clean up
 
 		stmt.close();
 
@@ -132,19 +108,10 @@ public class DBInterface{
 			String body )
 		throws SQLException {
 
-		/*
-		 * Get a connection to
-		 * the database.
-		 */
-
 		Connection conn = dataSource.getConnection();
 
-		/*
-		 * Write the insert statement.
-		 */
-
 		PreparedStatement stmt = conn.prepareStatement
-			( "INSERT INTO reply_threads (thread_id, user_id, reply_id,"
+			( "INSERT INTO replies (thread_id, user_id, reply_id,"
 			  + " attachment_type, attachment_name, body)"
 			+ " VALUES (?, ?, ?, ?, ?, ?)" );
 
@@ -160,11 +127,7 @@ public class DBInterface{
 		
 		stmt.setString( 6, body );
 		
-		//run it
-
 		stmt.executeUpdate();
-
-		//clean up
 
 		stmt.close();
 
@@ -179,11 +142,7 @@ public class DBInterface{
 	public static User getUser( int id )
 		throws SQLException {
 
-		//Get a connection.
-
 		Connection conn = dataSource.getConnection();
-
-		//Write the select statement.
 
 		PreparedStatement stmt = conn.prepareStatement(
 				"SELECT * FROM users WHERE id=?" );
@@ -199,6 +158,10 @@ public class DBInterface{
 				rs.getString( "username" ),
 				rs.getString( "password" ) );
 
+		stmt.close();
+
+		conn.close();
+
 		return user;
 
 	}
@@ -210,11 +173,7 @@ public class DBInterface{
 	public static User getUser( String username )
 		throws SQLException {
 
-		//Get a connection.
-
 		Connection conn = dataSource.getConnection();
-
-		//Write the select statement.
 
 		PreparedStatement stmt = conn.prepareStatement(
 				"SELECT * FROM users WHERE username=?" );
@@ -230,7 +189,144 @@ public class DBInterface{
 				rs.getString( "username" ),
 				rs.getString( "password" ) );
 
+		stmt.close();
+
+		conn.close();
+
 		return user;
+
+	}
+
+	/*
+	 * Get the a ... b most
+	 * recent threads.
+	 */
+
+	public static ArrayList< ReplyThread > getRecentThreads( int offset, int num )
+		throws SQLException {
+
+		Connection conn = dataSource.getConnection();
+
+		PreparedStatement stmt = conn.prepareStatement(
+				String.format(
+					"SELECT * FROM threads ORDER BY id DESC LIMIT %d, %d",
+					offset, num ) );
+
+		ResultSet rs = stmt.executeQuery();
+
+		ArrayList< ReplyThread > threads = new ArrayList< ReplyThread >( num );
+
+		for( int i = 0; rs.next(); i++ ){
+
+			threads.add( i, new ReplyThread( rs.getInt( "id" ),
+					Timestamp.valueOf( rs.getString( "date" ) ),
+					rs.getInt( "num_replies" ),
+					rs.getInt( "num_up_votes" ),
+					rs.getInt( "num_down_votes" ),
+					rs.getInt( "user_id" ),
+					AttachmentType
+					.valueOf( rs.getString( "attachment_type" ) ),
+					rs.getString( "attachment_name" ),
+					rs.getString( "title" ),
+					rs.getString( "body" ) ) );
+
+		}
+
+		rs.close();
+
+		stmt.close();
+
+		return threads;
+
+	}
+
+	/*
+	 * Get the a ... b most
+	 * recent threads from some user.
+	 */
+
+	public static ArrayList< ReplyThread > getRecentThreadsFromUser( User user, int offset, int num )
+		throws SQLException {
+
+		Connection conn = dataSource.getConnection();
+
+		PreparedStatement stmt = conn.prepareStatement(
+				String.format(
+					"SELECT * FROM threads WHERE user_id=? ORDER BY id DESC LIMIT %d, %d",
+					offset, num ) );
+
+		stmt.setInt( 1, user.getId() );
+
+		ResultSet rs = stmt.executeQuery();
+
+		ArrayList< ReplyThread > threads = new ArrayList< ReplyThread >( num );
+
+		for( int i = 0; rs.next(); i++ ){
+
+			threads.add( i, new ReplyThread( rs.getInt( "id" ),
+					Timestamp.valueOf( rs.getString( "date" ) ),
+					rs.getInt( "num_replies" ),
+					rs.getInt( "num_up_votes" ),
+					rs.getInt( "num_down_votes" ),
+					rs.getInt( "user_id" ),
+					AttachmentType
+					.valueOf( rs.getString( "attachment_type" ) ),
+					rs.getString( "attachment_name" ),
+					rs.getString( "title" ),
+					rs.getString( "body" ) ) );
+
+		}
+
+		rs.close();
+
+		stmt.close();
+
+		return threads;
+
+	}
+	/*
+	 * Get the a ... b most
+	 * recent replies on some thread.
+	 */
+
+	public static ArrayList< Reply > getRecentRepliesOnThread( ReplyThread thread, int offset, int num )
+		throws SQLException {
+
+		Connection conn = dataSource.getConnection();
+
+		PreparedStatement stmt = conn.prepareStatement(
+				String.format(
+					"SELECT * FROM replies WHERE thread_id=? ORDER BY id DESC LIMIT %d, %d",
+					offset, num ) );
+
+		stmt.setInt( 1, thread.getId() );
+
+		ResultSet rs = stmt.executeQuery();
+
+		ArrayList< Reply > replies = new ArrayList< Reply >( num );
+
+		for( int i = 0; rs.next(); i++ ){
+
+			replies.add( 1, new Reply( rs.getInt( "id" ),
+					Timestamp.valueOf( rs.getString( "date" ) ),
+					rs.getInt( "thread_id" ),
+					rs.getInt( "num_replies" ),
+					rs.getInt( "num_up_votes" ),
+					rs.getInt( "num_down_votes" ),
+					rs.getInt( "user_id" ),
+					rs.getInt( "reply_id" ),
+					AttachmentType
+					.valueOf( rs.getString( "attachment_type" ) ),
+					rs.getString( "attachment_name" ),
+					rs.getString( "body" ) ) );
+
+		}
+
+		rs.close();
+
+		stmt.close();
+
+		return replies;
 
 	}
 

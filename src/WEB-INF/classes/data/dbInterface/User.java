@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 
 public class User{
 
-	private int dbId;
+	private int id;
 
 	private Timestamp timeCreated;
 
@@ -21,12 +21,12 @@ public class User{
 	 * Constructor.
 	 */
 
-	public User( int dbIdTmp,
+	public User( int idTmp,
 			Timestamp timeCreatedTmp,
 			String usernameTmp,
 			String passwordTmp ){
 
-		dbId = dbIdTmp;
+		id = idTmp;
 
 		timeCreated = timeCreatedTmp;
 
@@ -40,7 +40,7 @@ public class User{
 	 * Getters.
 	 */
 
-	public int getDbId(){ return dbId; }
+	public int getId(){ return id; }
 
 	public Timestamp getTimeCreated(){ return timeCreated; }
 

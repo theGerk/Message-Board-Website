@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 
 public class Reply{
 
-	private int dbId;
+	private int id;
 
 	private Timestamp timeCreated;
 
@@ -19,23 +19,22 @@ public class Reply{
 
 	private AttachmentType attachmentType;
 
-	private String attachmentName, title, body;
+	private String attachmentName, body;
 
 	/*
 	 * Constructor.
 	 */
 
-	public Reply( int dbIdTmp, Timestamp timeCreatedTmp,
+	public Reply( int idTmp, Timestamp timeCreatedTmp,
 			int threadIdTmp,
 			int numRepliesTmp, int numUpVotesTmp,
 			int numDownVotesTmp, int userIdTmp,
 			int replyIdTmp,
 			AttachmentType attachmentTypeTmp,
 			String attachmentNameTmp,
-			String titleTmp,
 			String bodyTmp ){
 
-		dbId = dbIdTmp;
+		id = idTmp;
 
 		timeCreated = timeCreatedTmp;
 
@@ -55,8 +54,6 @@ public class Reply{
 
 		attachmentName = attachmentNameTmp;
 
-		title = titleTmp;
-
 		body = bodyTmp;
 
 	}
@@ -65,7 +62,7 @@ public class Reply{
 	 * Getters.
 	 */
 
-	public int getDbId(){ return dbId; }
+	public int getId(){ return id; }
 
 	public Timestamp getTimeCreated(){ return timeCreated; }
 
@@ -92,8 +89,6 @@ public class Reply{
 		return attachmentName;
 
 	}
-
-	public String getTitle(){ return title; }
 
 	public String getBody(){ return body; }
 
